@@ -5,9 +5,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class DictionaryResponse {
+public class Product {
     private Long id;
-    private String category;
-    private String subCategory;
+    private String name;
+    private double price;
 
 }

@@ -1,34 +1,58 @@
 package com.example.ingressproject2.controller;
 
-import com.example.ingressproject2.model.DictionaryRequest;
-import com.example.ingressproject2.model.DictionaryResponse;
-import com.example.ingressproject2.service.DictionaryService;
+import com.example.ingressproject2.model.Product;
+import com.example.ingressproject2.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("v1/dictionaries")
+@RequestMapping("v1/products")
 @RequiredArgsConstructor
-public class DictionaryController {
-    private final DictionaryService dictionaryService;
+public class ProductController {
+
+    private final ProductService productService;
+
+    @GetMapping("/products")
+    public List<Product> getProducts(){
+        return productService.getAllProducts();
+    }
+
     @GetMapping("/{id}")
-    public DictionaryResponse getDictionaryById(
-            @RequestHeader(name = "User-Id") Long userId,
-            @PathVariable Long id){
-        return dictionaryService.getDictionaryById(id);
+    public ResponseEntity<Product> getProductById(@PathVariable long id) {
+        Product product = productService.getProductById(id);
+        if (product != null) {
+            return ResponseEntity.ok(product);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
-    @GetMapping
-    public List<DictionaryResponse> getDictionaries(
-
-            @RequestParam(required = false) String category){
-        return dictionaryService.getDictionaries(category);
+    @PostMapping("/products")
+    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+        Product createdProduct = productService.createProduct(product);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
     }
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void saveDictionary(@RequestBody DictionaryRequest dictionary){
 
+    @PutMapping("/products/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable long id, @RequestBody Product updatedProduct) {
+        Product updatedProductResult = productService.updateProduct(id, updatedProduct);
+        if (updatedProductResult != null) {
+            return ResponseEntity.ok(updatedProductResult);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/products/{id}")
+    public ResponseEntity<String> deleteProduct(@PathVariable long id) {
+        if (productService.deleteProduct(id)) {
+            return ResponseEntity.ok("Product deleted successfully");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

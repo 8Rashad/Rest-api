@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class IngressProject2Application {
 
     public static void main(String[] args) {
+
         SpringApplication.run(IngressProject2Application.class, args);
     }
 
